@@ -15,29 +15,26 @@
 
 
 
-<cfif status eq "F">
-  <cfquery name="inserData" datasource="uicpaymentdatabase"> 
-INSERT INTO UICPaymentDatabase.dbo.StudentTransaction (TransactionDates, StudentID, TransactionDetails, Amount, TransactionStatus, TransactionID) 
-VALUES  ('#DATEFORMAT(#myVar#, "m/d/yyyy")#', #param1#, '#message#', #param2#, '#status#','#txnid#')
-;
-</cfquery>
+<cfstoredproc dataSource = "uicpaymentdatabase" procedure = "PaymentMade" >
+<cfset date123 = #DATEFORMAT(#myVar#, "m/d/yyyy")#>
+<cfprocparam cfsqltype="cf_sql_date" value="#date123#" dbvarname=@TransactionDates > 
+<cfprocparam cfsqltype="cf_sql_bigint" value="#param1#" dbvarname=@StudentID> 
+<cfprocparam cfsqltype="cf_sql_VARCHAR" value="#message#" dbvarname=@TransactionDetails> 
+<cfprocparam cfsqltype="cf_sql_MONEY" value="#param2#" dbvarname=@Amount> 
+<cfprocparam cfsqltype="cf_sql_VARCHAR" value="#status#" dbvarname=@TransactionStatus> 
+<cfprocparam cfsqltype="cf_sql_VARCHAR" value="#txnid#" dbvarname=@TransactionID> 
+</cfstoredproc> 
 
+
+
+<cfif status eq "F">
+   <cfoutput>Payment Success</cfoutput>
 <cfelseif status eq "S">
    <cfoutput>Payment Success</cfoutput>
 
-  <cfquery name="inserData" datasource="uicpaymentdatabase"> 
-INSERT INTO UICPaymentDatabase.dbo.StudentTransaction (TransactionDates, StudentID, TransactionDetails, Amount, TransactionStatus, TransactionID) 
-VALUES  ('#DATEFORMAT(#myVar#, "m/d/yyyy")#', #param1#, '#message#', #param2#, '#status#','#txnid#')
-;
-</cfquery>
 
 <cfelseif status eq "P">
-     <cfoutput>Payment Pending</cfoutput>
-       <cfquery name="inserData" datasource="uicpaymentdatabase"> 
-INSERT INTO UICPaymentDatabase.dbo.StudentTransaction (TransactionDates, StudentID, TransactionDetails, Amount, TransactionStatus, TransactionID) 
-VALUES  ('#DATEFORMAT(#myVar#, "m/d/yyyy")#', #param1#, '#message#', #param2#, '#status#','#txnid#')
-;
-</cfquery>
+   <cfoutput>Payment Pending</cfoutput>
 
 <cfelseif status eq "U">
      <cfoutput>Payment Unknown</cfoutput>
